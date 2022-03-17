@@ -18,10 +18,20 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
+    public Text BestScoreText;
+
     
     // Start is called before the first frame update
     void Start()
     {
+        if(SaveManager.Instance != null)
+        {
+            SaveManager.Instance.LoadHighScore();
+            BestScoreText.text = "Best Score : " + SaveManager.Instance.HighPlayerName + " : " + SaveManager.Instance.HighScore.ToString();
+
+            Debug.Log(SaveManager.Instance.currentPlayerName + " " + SaveManager.Instance.currentScore);
+            Debug.Log(SaveManager.Instance.HighPlayerName + " " + SaveManager.Instance.HighScore);
+        }
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -70,6 +80,15 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        if(SaveManager.Instance!=null)
+        {
+            if(m_Points>SaveManager.Instance.HighScore)
+            {
+                SaveManager.Instance.HighScore = m_Points;
+                SaveManager.Instance.HighPlayerName = SaveManager.Instance.currentPlayerName;
+                SaveManager.Instance.SaveHighScore();
+            }
+        }
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
